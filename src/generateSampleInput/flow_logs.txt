@@ -1,0 +1,15 @@
+22 tcp
+23 tcp
+25 tcp
+53 udp
+67 udp
+68 udp
+80 tcp
+443 tcp
+3306 tcp
+8080 tcp
+123 udp
+2049 tcp
+4433 tcp
+4000 tcp
+5000 tcp
