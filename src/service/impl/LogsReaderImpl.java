@@ -8,10 +8,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import service.LogsReaderService;
 
 public class LogsReaderImpl implements LogsReaderService {
 
+    private static final Logger logger = Logger.getLogger(LogsReaderImpl.class.getName());
     public int numThreads;
     ConcurrentHashMap<String, AtomicInteger> mapTagCounts;
     ConcurrentHashMap<String, AtomicInteger> mapPortProtocolCounts;
@@ -25,7 +28,7 @@ public class LogsReaderImpl implements LogsReaderService {
     }
 
     @Override
-    public void loadFile(String filePath) {
+    public void loadFile(String filePath) throws IOException {
         ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             br.readLine();
@@ -36,7 +39,8 @@ public class LogsReaderImpl implements LogsReaderService {
                 totalRecords++;
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            logger.log(Level.SEVERE, "ERROR_CODE_1003: Error reading file: {0}", e.getMessage());
+            throw e;
         } finally {
             executorService.shutdown();
         }

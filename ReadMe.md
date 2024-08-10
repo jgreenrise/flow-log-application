@@ -61,14 +61,14 @@ This program parses flow log data from a specified input file and maps each entr
       ```
       23,tcp,sv_P1 x
       ```
-    - We believe that the "x" at the end of this entry was added by mistake. Therefore, it has not been considered in our tag mapping logic, and only the valid entries will be processed. The valid lookup table file is structured as follows:
-      ```
-      dstport,protocol,tag
-      25,tcp,sv_P1
-      68,udp,sv_P2
-      31,udp,SV_P3
-      443,tcp,sv_P2
-      ```
+      - I believe that the "x" at the end of this entry was added by mistake. Therefore, it has not been considered in our tag mapping logic, and only the valid entries will be processed. The valid lookup table file is structured as follows:
+        ```
+        dstport,protocol,tag
+        25,tcp,sv_P1
+        68,udp,sv_P2
+        31,udp,SV_P3
+        443,tcp,sv_P2
+        ```
 
 6. **Port Input Validity**: The dot after the port number is ignored. 
     - Provided input:
@@ -96,15 +96,84 @@ This program parses flow log data from a specified input file and maps each entr
 
 ## Installation
 
-To set up the project locally, follow these steps:
+To set up the project on your local machine, please follow these steps:
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-repo.git
-cd your-repo
+# 1. Clone the repository
+git clone git@github.com:jgreenrise/flow-log-application.git
+cd flow-log-application
 
-# Compile the program
-javac -d . service/*.java FlowLogsReaderMainApplication.java
+# 2. Change to the src directory
+cd src
 
-# Run the program
-java FlowLogsReaderMainApplication flow_logs.txt tag_mappings.csv output.csv
+# 3. Upload/Update Input file in src directory
+# input_flow_logs.csv is already uploaded
+
+# 3. Compile the Java program
+javac service/*.java service/impl/*.java FlowLogMainApplication.java 
+
+# 4. Execute the program
+java FlowLogMainApplication <complete_file_path> <number_of_threads>
+# number_of_threads helps us load the files concurrently. 
+# - numThreads specifies the maximum number of threads that the thread pool can have active at any given time. 
+# - This means that the pool will create and manage exactly numThreads threads to execute tasks concurrently. 
+# - If there are more tasks than available threads, the additional tasks will wait in a queue until a thread becomes available.
+
+# Example command
+java FlowLogMainApplication "input_flow_logs.csv" 4
+Uploaded records: 1000
+
+** Tag Counts: **
+| Tag        | Count |
+|------------|-------|
+| untagged   | 712   |
+| sv_P2      | 199   |
+| sv_P1      | 89    |
+
+** Port/Protocol Combination Counts: **
+| Port       | Protocol   | Count |
+|------------|------------|-------|
+| 3306       | tcp        | 65    |
+| 4433       | tcp        | 58    |
+| 68         | udp        | 70    |
+| 123        | udp        | 68    |
+| 53         | udp        | 75    |
+| 23         | tcp        | 69    |
+| 443        | tcp        | 65    |
+| 25         | tcp        | 70    |
+| 2049       | tcp        | 66    |
+| 80         | tcp        | 79    |
+| 67         | udp        | 72    |
+| 4000       | tcp        | 73    |
+| 22         | tcp        | 48    |
+| 5000       | tcp        | 60    |
+| 8080       | tcp        | 62    |
+
+```
+
+```
+# 5. Test: Negative flow: File does not exist
+java FlowLogMainApplication "input_flow_logs1.csv" 4
+
+## Output
+ERROR_CODE_1003: Error reading file: input_flow_logs1.csv (No such file or directory)
+```
+
+```
+# 6. Test: Negative flow: File empty
+java FlowLogMainApplication testInputFiles/test_empty_file.csv 2
+
+## Output
+ERROR_CODE_1002: Please provide data in the input file and try again. Refer ReadMe for further instructions
+Uploaded records: 0
+```
+
+```
+# 7. Test: Negative flow: Invalid number of threads provided
+java FlowLogMainApplication "input_flow_logs.csv" "-2dd"
+
+## Output
+ERROR_CODE_1000: Invalid number of threads provided. Provided value: -1
+ERROR_CODE_1000: Please Retry. Example command: java FlowLogMainApplication input_flow_logs1.csv 4: 
+```
+
