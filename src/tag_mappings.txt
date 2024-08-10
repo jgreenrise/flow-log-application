@@ -1,6 +1,0 @@
-25,tcp,sv_P2
-68,udp,sv_P2
-22,tcp,sv_P1
-53,udp,sv_P2
-80,tcp,sv_P1
-443,tcp,sv_P2

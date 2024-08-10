@@ -13,7 +13,7 @@ with open('tag_mappings.txt', 'r') as f:
 num_records = 1000
 
 # Create a file to save the random flow log data
-with open('../random_flow_logs.csv', 'w', newline='') as file:
+with open('../input_flow_logs.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     # Write the header
     writer.writerow(['dstport', 'protocol', 'tag'])
@@ -37,4 +37,4 @@ with open('../random_flow_logs.csv', 'w', newline='') as file:
         # Write the row
         writer.writerow([dstport, protocol, tag])
 
-print("Random flow log data generated as 'random_flow_logs.csv'")
+print("Random flow log data generated as 'input_flow_logs.csv'")
