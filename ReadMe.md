@@ -177,3 +177,34 @@ ERROR_CODE_1000: Invalid number of threads provided. Provided value: -1
 ERROR_CODE_1000: Please Retry. Example command: java FlowLogMainApplication input_flow_logs1.csv 4: 
 ```
 
+## Running Unit Tests
+
+To run the unit tests for the project, follow these steps:
+
+1. **Compile the main classes:**
+   ```bash
+   javac -d target -cp libs/junit-platform-console-standalone-1.10.0.jar src/service/impl/LogsReaderImpl.java src/service/LogsReaderService.java
+
+2. Compile the unit test classes:
+   ```bash
+   javac -d target -cp target:libs/junit-platform-console-standalone-1.10.0.jar src/unitTests/LogsReaderImplTest.java
+
+3. Run the unit tests:
+    ```bash
+   java -jar libs/junit-platform-console-standalone-1.10.0.jar --class-path target --scan-class-path
+
+## Error Handling
+
+- If the provided filename and number of threads are not specified, the program will log an error and exit.
+- If the number of threads provided is invalid (not a number or less than or equal to zero), an exception will be thrown.
+- If the file cannot be read, an error will be logged, and an exception will be thrown.
+- If no data is provided in the input file, an error will be logged, and the program will exit.
+
+## Future Consideration
+
+* Make number_of_threads an optional parameter.
+* Add a REST API to interact with the program.
+* Send results via email notifications.
+* Deploy the project as a temporary task based on needs.
+* Save results in a database.
+* Cache responses for the same input.
